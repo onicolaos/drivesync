@@ -41,6 +41,11 @@ class DriveManager
       credentials = authorizer.get_and_store_credentials_from_code(
         user_id: user_id, code: code, base_url: OOB_URI)
     end
+  	# Force token refresh if expired and refresh_token is available
+  	if credentials.expired? && credentials.refresh_token
+  	  Log.log_notice "Access token expired – refreshing using refresh_token..."
+  	  credentials.fetch_access_token!
+  	end
     credentials
   end
 
